@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chuletero KSAP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/fontsource-inter@4.5.0/index.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Segoe UI', 'sans-serif'],
+                    },
+                    colors: {
+                        ksap: {
+                            primary: '#667eea',
+                            secondary: '#764ba2',
+                            dark: '#1a1a2e',
+                            surface: '#16213e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Inter', sans-serif;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .chip {
+            transition: all 0.2s ease;
+        }
+        .chip.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+        }
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-hover:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-ksap-dark text-gray-800 dark:text-gray-100 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-ksap-surface/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 shadow-sm">
+        <div class="max-w-3xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between mb-3">
+                <h1 class="text-xl font-bold bg-gradient-to-r from-ksap-primary to-ksap-secondary bg-clip-text text-transparent">
+                    📚 Chuletero KSAP
+                </h1>
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" aria-label="Cambiar tema">
+                    <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                </button>
+            </div>
+            
+            <!-- Search -->
+            <div class="relative">
+                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" id="search-input" placeholder="Buscar elemento, sintaxis o error..." 
+                    class="w-full pl-10 pr-4 py-2.5 bg-gray-100 dark:bg-gray-800 border border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-ksap-primary focus:bg-white dark:focus:bg-gray-900 transition-all text-sm">
+            </div>
+        </div>
+    </header>
+
+    <!-- Filters -->
+    <div class="sticky top-[105px] z-40 bg-gray-50/95 dark:bg-ksap-dark/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 py-3">
+        <div class="max-w-3xl mx-auto px-4 space-y-3">
+            <!-- Active Filters Summary -->
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Filtros</span>
+                <button id="clear-filters" class="text-xs text-ksap-primary font-medium hover:underline hidden">Limpiar todo</button>
+            </div>
+            
+            <!-- Lenguaje -->
+            <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1" id="filter-lenguaje">
+                <!-- Injected by JS -->
+            </div>
+            
+            <!-- Categoría -->
+            <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1" id="filter-categoria">
+                <!-- Injected by JS -->
+            </div>
+            
+            <!-- Tipo -->
+            <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1" id="filter-tipo">
+                <!-- Injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <main class="flex-1 max-w-3xl mx-auto w-full px-4 py-4 pb-24">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-300">
+                Resultados: <span id="result-count" class="text-ksap-primary">0</span>
+            </h2>
+        </div>
+        
+        <div id="cards-container" class="space-y-4">
+            <!-- Cards injected by JS -->
+        </div>
+        
+        <div id="empty-state" class="hidden flex-col items-center justify-center py-12 text-center">
+            <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-1">No se encontraron resultados</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Prueba a ajustar los filtros o el término de búsqueda.</p>
+        </div>
+    </main>
+
+    <script>
+        // Datos del Chuletero
+        const chuleteroData = [
+            { lenguaje: "HTML", categoria: "Estructura", tipo: "Declaración", elemento: "DOCTYPE", sintaxis: "<!DOCTYPE html>", descripcion: "Declara HTML5 moderno", ejemplo: "Primera línea de index.html", errores: "Olvidarlo activa el 'quirks mode'" },
+            { lenguaje: "HTML", categoria: "Estructura", tipo: "Etiqueta", elemento: "html", sintaxis: "<html lang=\"es\">", descripcion: "Raíz del documento + idioma", ejemplo: "<html lang=\"es\"> en todas las páginas", errores: "No poner lang perjudica el SEO" },
+            { lenguaje: "HTML", categoria: "Estructura", tipo: "Contenedor", elemento: "head", sintaxis: "<head>...</head>", descripcion: "Metadatos (no visibles)", ejemplo: "<head><meta charset=\"UTF-8\"></head>", errores: "Confundirlo con body" },
+            { lenguaje: "HTML", categoria: "Estructura", tipo: "Contenedor", elemento: "body", sintaxis: "<body>...</body>", descripcion: "Contenido visible de la página", ejemplo: "<body><nav>...<main>...</body>", errores: "Poner metadatos dentro de body" },
+            { lenguaje: "HTML", categoria: "Semántica", tipo: "Etiqueta", elemento: "nav", sintaxis: "<nav>...</nav>", descripcion: "Barra de navegación principal", ejemplo: "<nav class=\"navbar\">...</nav>", errores: "Usar div en lugar de nav" },
+            { lenguaje: "HTML", categoria: "Semántica", tipo: "Etiqueta", elemento: "header", sintaxis: "<header>...</header>", descripcion: "Cabecera de página o sección", ejemplo: "<header><h1>Ksap</h1></header>", errores: "Usar múltiples headers sin contexto" },
+            { lenguaje: "HTML", categoria: "Semántica", tipo: "Etiqueta", elemento: "main", sintaxis: "<main>...</main>", descripcion: "Contenido único central (solo 1)", ejemplo: "<main id=\"app-content\">...</main>", errores: "Poner más de uno por página" },
+            { lenguaje: "HTML", categoria: "Semántica", tipo: "Etiqueta", elemento: "section", sintaxis: "<section>...</section>", descripcion: "Agrupación temática con título", ejemplo: "<section class=\"stats-panel\">", errores: "Usarlo como div genérico" },
+            { lenguaje: "HTML", categoria: "Semántica", tipo: "Etiqueta", elemento: "footer", sintaxis: "<footer>...</footer>", descripcion: "Pie de página o de sección", ejemplo: "<footer class=\"fixed-footer\">", errores: "Ponerlo fuera de main cuando es de contenido" },
+            { lenguaje: "HTML", categoria: "Semántica", tipo: "Etiqueta", elemento: "article", sintaxis: "<article>...</article>", descripcion: "Contenido independiente", ejemplo: "<article class=\"task-card\">", errores: "Confundirlo con section" },
+            { lenguaje: "HTML", categoria: "Semántica", tipo: "Etiqueta", elemento: "div", sintaxis: "<div>...</div>", descripcion: "Contenedor genérico (sin significado)", ejemplo: "<div class=\"card shadow-sm\">", errores: "Usarlo cuando existe etiqueta semántica" },
+            { lenguaje: "HTML", categoria: "Formularios", tipo: "Contenedor", elemento: "form", sintaxis: "<form id=\"x\">...</form>", descripcion: "Contenedor de inputs con acción", ejemplo: "<form id=\"login-form\">", errores: "Olvidar el action o method" },
+            { lenguaje: "HTML", categoria: "Formularios", tipo: "Input", elemento: "input", sintaxis: "<input type=\"x\">", descripcion: "Campo de entrada genérico", ejemplo: "<input type=\"email\" id=\"email\">", errores: "No poner type (por defecto es text)" },
+            { lenguaje: "HTML", categoria: "Formularios", tipo: "Input", elemento: "textarea", sintaxis: "<textarea>...</textarea>", descripcion: "Campo de texto multilínea", ejemplo: "<textarea id=\"nota-tarea\">", errores: "Olvidar cerrar la etiqueta" },
+            { lenguaje: "HTML", categoria: "Formularios", tipo: "Select", elemento: "select", sintaxis: "<select>...</select>", descripcion: "Menú desplegable de opciones", ejemplo: "<select id=\"filtro-responsable\">", errores: "No poner options dentro" },
+            { lenguaje: "HTML", categoria: "Formularios", tipo: "Botón", elemento: "button", sintaxis: "<button type=\"x\">", descripcion: "Botón clickeable", ejemplo: "<button type=\"submit\">Guardar</button>", errores: "Olvidar type (recarga el form)" },
+            { lenguaje: "HTML", categoria: "Formularios", tipo: "Etiqueta", elemento: "label", sintaxis: "<label for=\"x\">", descripcion: "Etiqueta asociada a un input", ejemplo: "<label for=\"password\">Contraseña</label>", errores: "No usar for (pierde accesibilidad)" },
+            { lenguaje: "HTML", categoria: "Atributos", tipo: "Identificador", elemento: "id", sintaxis: "id=\"...\"", descripcion: "Identificador ÚNICO en toda la página", ejemplo: "id=\"search-input\"", errores: "Poner IDs duplicados (rompe JS)" },
+            { lenguaje: "HTML", categoria: "Atributos", tipo: "Clase", elemento: "class", sintaxis: "class=\"...\"", descripcion: "Clase para CSS/JS (repetible)", ejemplo: "class=\"card shadow-sm\"", errores: "Usar class cuando necesitas un ID único" },
+            { lenguaje: "HTML", categoria: "Atributos", tipo: "Dato custom", elemento: "data-*", sintaxis: "data-x=\"...\"", descripcion: "Almacena datos custom para JS", ejemplo: "data-id=\"${tarea.id}\"", errores: "No usar comillas en el valor" },
+            { lenguaje: "HTML", categoria: "Atributos", tipo: "Estado", elemento: "hidden", sintaxis: "hidden", descripcion: "Oculta elemento sin eliminarlo del DOM", ejemplo: "<div hidden id=\"modal\">", errores: "Confundirlo con display: none" },
+            { lenguaje: "HTML", categoria: "Atributos", tipo: "Estado", elemento: "disabled", sintaxis: "disabled", descripcion: "Desactiva interacción (inputs/buttons)", ejemplo: "<button disabled>Cargando...</button>", errores: "Olvidar quitarlo tras cargar" },
+            { lenguaje: "HTML", categoria: "Atributos", tipo: "Validación", elemento: "required", sintaxis: "required", descripcion: "Obliga a rellenar antes de enviar form", ejemplo: "<input type=\"text\" required>", errores: "No dar feedback visual al usuario" },
+            { lenguaje: "HTML", categoria: "Accesibilidad", tipo: "Atributo", elemento: "aria-label", sintaxis: "aria-label=\"...\"", descripcion: "Describe elemento a lectores de pantalla", ejemplo: "<button aria-label=\"Cerrar menú\">", errores: "No usarlo en iconos sin texto" },
+            { lenguaje: "HTML", categoria: "Accesibilidad", tipo: "Atributo", elemento: "alt", sintaxis: "alt=\"...\"", descripcion: "Texto alternativo para imágenes", ejemplo: "<img src=\"logo.png\" alt=\"Logo Ksap\">", errores: "Dejarlo vacío en imágenes informativas" },
+            { lenguaje: "HTML", categoria: "Meta", tipo: "Etiqueta", elemento: "meta charset", sintaxis: "<meta charset=\"UTF-8\">", descripcion: "Define codificación de caracteres", ejemplo: "<meta charset=\"UTF-8\">", errores: "Ponerlo después del title" },
+            { lenguaje: "HTML", categoria: "Meta", tipo: "Etiqueta", elemento: "meta viewport", sintaxis: "<meta name=\"viewport\">", descripcion: "Adapta escala a móviles", ejemplo: "<meta name=\"viewport\" content=\"width=device-width\">", errores: "Olvidarlo rompe el responsive" },
+            { lenguaje: "HTML", categoria: "Errores", tipo: "Problema", elemento: "IDs duplicados", sintaxis: "", descripcion: "JS solo encuentra el primero y falla", ejemplo: "Usar class para listas dinámicas", errores: "No revisar que los IDs sean únicos" },
+            { lenguaje: "HTML", categoria: "Errores", tipo: "Problema", elemento: "Button sin type", sintaxis: "", descripcion: "Recarga form por defecto", ejemplo: "Usar <button type=\"button\">", errores: "Asumir que todos los botones son submit" },
+            { lenguaje: "CSS", categoria: "Selectores", tipo: "Clase", elemento: ".clase", sintaxis: ".clase { }", descripcion: "Selecciona por atributo class", ejemplo: ".card { padding: 1rem; }", errores: "Confundirlo con #id" },
+            { lenguaje: "CSS", categoria: "Selectores", tipo: "ID", elemento: "#id", sintaxis: "#id { }", descripcion: "Selecciona por atributo id (único)", ejemplo: "#search-input { width: 100%; }", errores: "Usarlo para elementos repetidos" },
+            { lenguaje: "CSS", categoria: "Selectores", tipo: "Etiqueta", elemento: "elemento", sintaxis: "elemento { }", descripcion: "Selecciona por etiqueta HTML", ejemplo: "nav { background: #fff; }", errores: "Afecta a TODOS los elementos de ese tipo" },
+            { lenguaje: "CSS", categoria: "Selectores", tipo: "Hijo", elemento: "selector > hijo", sintaxis: "selector > hijo { }", descripcion: "Selecciona hijo directo", ejemplo: ".nav > a { margin: 0 10px; }", errores: "Confundirlo con espacio (descendiente)" },
+            { lenguaje: "CSS", categoria: "Selectores", tipo: "Pseudo-clase", elemento: ":hover", sintaxis: ":hover { }", descripcion: "Estado al pasar ratón", ejemplo: ".btn:hover { opacity: 0.9; }", errores: "No definir estado base primero" },
+            { lenguaje: "CSS", categoria: "Selectores", tipo: "Pseudo-clase", elemento: ":nth-child(n)", sintaxis: ":nth-child(n) { }", descripcion: "Selecciona por posición", ejemplo: "tr:nth-child(even) { background: #f9f9f9; }", errores: "Confundir :nth-child con :nth-of-type" },
+            { lenguaje: "CSS", categoria: "Modelo Caja", tipo: "Espacio externo", elemento: "margin", sintaxis: "margin: X;", descripcion: "Espacio EXTERIOR (separa de otros)", ejemplo: "margin: 1rem auto; (centra)", errores: "Confundirlo con padding" },
+            { lenguaje: "CSS", categoria: "Modelo Caja", tipo: "Espacio interno", elemento: "padding", sintaxis: "padding: X;", descripcion: "Espacio INTERIOR (separa contenido)", ejemplo: "padding: 0.8rem 1rem;", errores: "No considerar que aumenta el tamaño total" },
+            { lenguaje: "CSS", categoria: "Modelo Caja", tipo: "Borde", elemento: "border", sintaxis: "border: X solid Y;", descripcion: "Línea alrededor del padding", ejemplo: "border: 1px solid #e9ecef;", errores: "Olvidar que suma al tamaño total" },
+            { lenguaje: "CSS", categoria: "Modelo Caja", tipo: "Cálculo", elemento: "box-sizing", sintaxis: "box-sizing: X;", descripcion: "Cómo se calcula el ancho total", ejemplo: "box-sizing: border-box; (recomendado)", errores: "No usarlo (el layout se rompe)" },
+            { lenguaje: "CSS", categoria: "Posicionamiento", tipo: "Flujo normal", elemento: "position: static", sintaxis: "position: static;", descripcion: "Flujo normal (por defecto)", ejemplo: "Elementos siguen el orden HTML", errores: "Intentar usar z-index (no funciona)" },
+            { lenguaje: "CSS", categoria: "Posicionamiento", tipo: "Relativo", elemento: "position: relative", sintaxis: "position: relative;", descripcion: "Relativo a posición original", ejemplo: "Contenedor padre para hijos absolute", errores: "Olvidar que mantiene su espacio" },
+            { lenguaje: "CSS", categoria: "Posicionamiento", tipo: "Absoluto", elemento: "position: absolute", sintaxis: "position: absolute;", descripcion: "Relativo al ancestro relative más cercano", ejemplo: "Dropdowns y tooltips", errores: "No poner position al padre (se va al body)" },
+            { lenguaje: "CSS", categoria: "Posicionamiento", tipo: "Fijo", elemento: "position: fixed", sintaxis: "position: fixed;", descripcion: "Relativo al VIEWPORT (no hace scroll)", ejemplo: "Nav, footer y FABs en móvil", errores: "Confundirlo con absolute" },
+            { lenguaje: "CSS", categoria: "Posicionamiento", tipo: "Pegajoso", elemento: "position: sticky", sintaxis: "position: sticky;", descripcion: "Híbrido: se queda fijo al llegar a punto", ejemplo: "Cabeceras de tablas largas", errores: "No poner top/left/right/bottom" },
+            { lenguaje: "CSS", categoria: "Flexbox", tipo: "Activar", elemento: "display: flex", sintaxis: "display: flex;", descripcion: "Activa flexbox en el contenedor", ejemplo: ".nav { display: flex; }", errores: "Olvidar que afecta solo a hijos directos" },
+            { lenguaje: "CSS", categoria: "Flexbox", tipo: "Alineación horizontal", elemento: "justify-content", sintaxis: "justify-content: X;", descripcion: "Alineación eje principal (horizontal)", ejemplo: "space-between / center / flex-start", errores: "Confundirlo con align-items" },
+            { lenguaje: "CSS", categoria: "Flexbox", tipo: "Alineación vertical", elemento: "align-items", sintaxis: "align-items: X;", descripcion: "Alineación eje cruzado (vertical)", ejemplo: "center / stretch / flex-start", errores: "No entender el eje cruzado" },
+            { lenguaje: "CSS", categoria: "Flexbox", tipo: "Espacio", elemento: "gap", sintaxis: "gap: X;", descripcion: "Espacio entre elementos hijos", ejemplo: "gap: 0.5rem; (mejor que margins)", errores: "No tiene soporte en IE11" },
+            { lenguaje: "CSS", categoria: "Flexbox", tipo: "Dirección", elemento: "flex-direction", sintaxis: "flex-direction: X;", descripcion: "Dirección del flujo", ejemplo: "row (default) / column", errores: "Confundir row con column" },
+            { lenguaje: "CSS", categoria: "Flexbox", tipo: "Salto de línea", elemento: "flex-wrap", sintaxis: "flex-wrap: X;", descripcion: "Permite saltar de línea", ejemplo: "wrap (grids responsive)", errores: "Olvidarlo hace que los elementos se encojan" },
+            { lenguaje: "CSS", categoria: "Variables", tipo: "Definición", elemento: ":root", sintaxis: ":root { --var: val };", descripcion: "Variable global", ejemplo: ":root { --primary: #667eea; }", errores: "No usar guion doble (--)" },
+            { lenguaje: "CSS", categoria: "Variables", tipo: "Uso", elemento: "var()", sintaxis: "var(--nombre);", descripcion: "Usa la variable", ejemplo: "color: var(--primary);", errores: "No poner el guion doble" },
+            { lenguaje: "CSS", categoria: "Variables", tipo: "Tema oscuro", elemento: "@media (prefers-color-scheme)", sintaxis: "@media (prefers-color-scheme: dark)", descripcion: "Detecta tema del SO", ejemplo: ".dark-mode { --bg: #121212; }", errores: "No respetar la preferencia del usuario" },
+            { lenguaje: "CSS", categoria: "Variables", tipo: "Clase forzada", elemento: "body.dark-mode", sintaxis: "body.dark-mode { }", descripcion: "Clase forzada por JS", ejemplo: "Se añade al <body> al activar modo oscuro", errores: "No aplicarla a todos los elementos" },
+            { lenguaje: "CSS", categoria: "Responsive", tipo: "Media Query", elemento: "@media (max-width)", sintaxis: "@media (max-width: Xpx)", descripcion: "Tablets/móviles grandes", ejemplo: "@media (max-width: 768px)", errores: "No usar mobile-first" },
+            { lenguaje: "CSS", categoria: "Responsive", tipo: "Media Query", elemento: "@media (max-width)", sintaxis: "@media (max-width: Xpx)", descripcion: "Móviles pequeños", ejemplo: "@media (max-width: 480px)", errores: "Poner breakpoints arbitrarios" },
+            { lenguaje: "CSS", categoria: "Responsive", tipo: "Media Query", elemento: "@media (min-width)", sintaxis: "@media (min-width: Xpx)", descripcion: "Desktop", ejemplo: "@media (min-width: 1024px)", errores: "No probar en todos los tamaños" },
+            { lenguaje: "CSS", categoria: "Errores", tipo: "Problema", elemento: "z-index sin position", sintaxis: "", descripcion: "No funciona si es static", ejemplo: "Añadir position: relative/fixed", errores: "Asumir que z-index siempre funciona" },
+            { lenguaje: "CSS", categoria: "Errores", tipo: "Problema", elemento: "overflow: hidden excesivo", sintaxis: "", descripcion: "Corta sombras/menús", ejemplo: "Usar solo en contenedores estrictos", errores: "No revisar qué se está cortando" },
+            { lenguaje: "CSS", categoria: "Errores", tipo: "Problema", elemento: "Unidades px en todo", sintaxis: "", descripcion: "No escala en pantallas", ejemplo: "Usar rem para texto y % o vw/vh", errores: "No usar unidades relativas" },
+            { lenguaje: "JS", categoria: "Sintaxis", tipo: "Puntuación", elemento: "punto y coma", sintaxis: "instrucción;", descripcion: "Finaliza instrucción (opcional pero recomendado)", ejemplo: "const app = {};", errores: "Depender del ASI (Automatic Semicolon Insertion)" },
+            { lenguaje: "JS", categoria: "Sintaxis", tipo: "Comentarios", elemento: "// y /* */", sintaxis: "// comentario o /* comentario */", descripcion: "Comentarios (no se ejecutan)", ejemplo: "// Cargar estado inicial", errores: "No documentar el código complejo" },
+            { lenguaje: "JS", categoria: "Sintaxis", tipo: "Debug", elemento: "console.log()", sintaxis: "console.log(x);", descripcion: "Imprime en consola para debug", ejemplo: "console.log('App iniciada');", errores: "Dejar console.log en producción" },
+            { lenguaje: "JS", categoria: "Sintaxis", tipo: "Modo estricto", elemento: "\"use strict\"", sintaxis: "\"use strict\";", descripcion: "Modo estricto (evita errores silenciosos)", ejemplo: "\"use strict\"; al inicio del archivo", errores: "No usarlo (permite malas prácticas)" },
+            { lenguaje: "JS", categoria: "Variables", tipo: "Constante", elemento: "const", sintaxis: "const x = val;", descripcion: "Variable que NO se reasigna", ejemplo: "const API_URL = \"https://...\";", errores: "Intentar reasignarla (da error)" },
+            { lenguaje: "JS", categoria: "Variables", tipo: "Variable mutable", elemento: "let", sintaxis: "let x = val;", descripcion: "Variable que SÍ cambia de valor", ejemplo: "let contador = 0; contador++;", errores: "Usar var en lugar de let" },
+            { lenguaje: "JS", categoria: "Variables", tipo: "Antigua", elemento: "var", sintaxis: "var x = val;", descripcion: "Variable antigua (scope global)", ejemplo: "var temp = \"legacy\"; ❌", errores: "Usarla (hoisting y scope confusos)" },
+            { lenguaje: "JS", categoria: "Tipos", tipo: "Texto", elemento: "string", sintaxis: "\"texto\" o 'texto'", descripcion: "Texto entre comillas", ejemplo: "\"Tarea completada\"", errores: "Usar comillas simples y dobles indistintamente" },
+            { lenguaje: "JS", categoria: "Tipos", tipo: "Número", elemento: "number", sintaxis: "25 o 3.14", descripcion: "Número entero o decimal", ejemplo: "25 / 3.14", errores: "Confundir string \"25\" con number 25" },
+            { lenguaje: "JS", categoria: "Tipos", tipo: "Booleano", elemento: "boolean", sintaxis: "true o false", descripcion: "Verdadero o falso", ejemplo: "true / false", errores: "Usar \"true\" (string) en lugar de true" },
+            { lenguaje: "JS", categoria: "Tipos", tipo: "Objeto", elemento: "object", sintaxis: "{ key: val }", descripcion: "Colección de pares clave:valor", ejemplo: "{ id: 1, nombre: \"Limpiar\" }", errores: "Confundir objeto con array" },
+            { lenguaje: "JS", categoria: "Tipos", tipo: "Array", elemento: "array", sintaxis: "[val1, val2]", descripcion: "Lista ordenada de elementos", ejemplo: "[\"Rosa\", \"Pedro\", \"Ana\"]", errores: "Acceder a índice inexistente (undefined)" },
+            { lenguaje: "JS", categoria: "Tipos", tipo: "Vacío", elemento: "null/undefined", sintaxis: "null o undefined", descripcion: "Vacío intencional / No asignado", ejemplo: "localStorage.getItem(\"user\") || null", errores: "Confundir null con undefined" },
+            { lenguaje: "JS", categoria: "Control", tipo: "Condición", elemento: "if", sintaxis: "if (cond) { }", descripcion: "Ejecuta si es verdadero", ejemplo: "if (isLoggedIn) { mostrarPerfil(); }", errores: "No usar === (usa == y da errores)" },
+            { lenguaje: "JS", categoria: "Control", tipo: "Alternativa", elemento: "else if / else", sintaxis: "else if / else { }", descripcion: "Alternativas si el if falla", ejemplo: "else if (esInvitado) { mostrarLimitado(); }", errores: "Anidar demasiados else if" },
+            { lenguaje: "JS", categoria: "Control", tipo: "Múltiples casos", elemento: "switch", sintaxis: "switch (val) { case x: }", descripcion: "Evalúa múltiples casos exactos", ejemplo: "switch (estado) { case \"pendiente\": ... }", errores: "No poner break (cae al siguiente)" },
+            { lenguaje: "JS", categoria: "Control", tipo: "Bucle clásico", elemento: "for", sintaxis: "for (let i=0; i<n; i++)", descripcion: "Bucle clásico con contador", ejemplo: "for (let i=0; i<tareas.length; i++) { ... }", errores: "Error off-by-one (i<=n en lugar de i<n)" },
+            { lenguaje: "JS", categoria: "Control", tipo: "Bucle moderno", elemento: "for...of", sintaxis: "for (let item of array)", descripcion: "Bucle moderno para recorrer arrays", ejemplo: "for (let tarea of tareasData) { ... }", errores: "Intentar acceder al índice (no disponible)" },
+            { lenguaje: "JS", categoria: "Control", tipo: "Mientras", elemento: "while", sintaxis: "while (cond) { }", descripcion: "Repite mientras sea verdadero", ejemplo: "while (intentos < 3) { ... }", errores: "Crear bucle infinito (condición siempre true)" },
+            { lenguaje: "JS", categoria: "Funciones", tipo: "Declarativa", elemento: "function", sintaxis: "function nombre() { }", descripcion: "Se hoistea (se puede usar antes)", ejemplo: "function renderizar() { ... }", errores: "No entender el hoisting" },
+            { lenguaje: "JS", categoria: "Funciones", tipo: "Expresión", elemento: "const fn = function", sintaxis: "const fn = function() { }", descripcion: "Asignada a variable", ejemplo: "const filtrar = function() { ... };", errores: "Necesitar punto y coma al final" },
+            { lenguaje: "JS", categoria: "Funciones", tipo: "Flecha", elemento: "()=>{}", sintaxis: "const fn = (x) => x;", descripcion: "Sintaxis corta sin this propio", ejemplo: "const sumar = (a, b) => a + b;", errores: "No usar paréntesis con múltiples params" },
+            { lenguaje: "JS", categoria: "Funciones", tipo: "Asíncrona", elemento: "async function", sintaxis: "async function fn() { }", descripcion: "Permite usar await dentro", ejemplo: "async function fetchDatos() { ... }", errores: "No usar try/catch con await" },
+            { lenguaje: "JS", categoria: "Funciones", tipo: "Retorno", elemento: "return", sintaxis: "return val;", descripcion: "Devuelve valor y sale de la función", ejemplo: "return tarea.estado === \"completada\";", errores: "Olvidar return (devuelve undefined)" },
+            { lenguaje: "JS", categoria: "Arrays", tipo: "Filtro", elemento: ".filter()", sintaxis: "array.filter(cond)", descripcion: "Nuevo array con los que cumplen", ejemplo: "tareas.filter(t => t.responsable === \"Rosa\")", errores: "Modificar el array original (no lo filtra)" },
+            { lenguaje: "JS", categoria: "Arrays", tipo: "Transformar", elemento: ".map()", sintaxis: "array.map(fn)", descripcion: "Transforma cada elemento", ejemplo: "tareas.map(t => t.nombre)", errores: "No devolver nada en el callback" },
+            { lenguaje: "JS", categoria: "Arrays", tipo: "Acumular", elemento: ".reduce()", sintaxis: "array.reduce((acc, item) => {...}, val)", descripcion: "Acumula valores (contar/sumar/agrupar)", ejemplo: "tareas.reduce((acc, t) => acc + (t.estado===\"hecha\"?1:0), 0)", errores: "No poner valor inicial" },
+            { lenguaje: "JS", categoria: "Arrays", tipo: "Acción", elemento: ".forEach()", sintaxis: "array.forEach(fn)", descripcion: "Ejecuta acción (no devuelve nada)", ejemplo: "tareas.forEach(t => pintarFila(t))", errores: "Esperar que devuelva un array" },
+            { lenguaje: "JS", categoria: "Arrays", tipo: "Buscar", elemento: ".find()", sintaxis: "array.find(cond)", descripcion: "Devuelve el PRIMER elemento que cumple", ejemplo: "tareas.find(t => t.id === 3)", errores: "No verificar si existe (puede ser undefined)" },
+            { lenguaje: "JS", categoria: "Arrays", tipo: "Existe", elemento: ".includes()", sintaxis: "array.includes(val)", descripcion: "Boolean: ¿existe el valor en el array?", ejemplo: "[\"Rosa\",\"Pedro\"].includes(usuario)", errores: "No funciona con objetos (usa ===)" },
+            { lenguaje: "JS", categoria: "Arrays", tipo: "Copia", elemento: "[...array]", sintaxis: "[...array]", descripcion: "Spread: copia o une arrays", ejemplo: "const nuevas = [...viejas, nuevaTarea]", errores: "Modificar la copia (modifica original si son objetos)" },
+            { lenguaje: "JS", categoria: "DOM", tipo: "Selector", elemento: "querySelector()", sintaxis: "document.querySelector(sel)", descripcion: "Selecciona el primero que coincida", ejemplo: "const btn = document.querySelector(\"#save\");", errores: "No funciona con selectores inválidos" },
+            { lenguaje: "JS", categoria: "DOM", tipo: "Selector", elemento: "getElementById()", sintaxis: "document.getElementById(id)", descripcion: "Selecciona por ID único", ejemplo: "const modal = document.getElementById(\"modal\");", errores: "Poner # en el ID (solo el nombre)" },
+            { lenguaje: "JS", categoria: "DOM", tipo: "Clases", elemento: "classList", sintaxis: "classList.add/remove/toggle", descripcion: "Gestiona clases CSS", ejemplo: "fila.classList.toggle(\"hecha\");", errores: "No usar toggle para alternar" },
+            { lenguaje: "JS", categoria: "DOM", tipo: "HTML", elemento: "innerHTML", sintaxis: "element.innerHTML = x", descripcion: "Lee/escribe HTML dentro del elemento", ejemplo: "contenedor.innerHTML = \"<p>OK</p>\";", errores: "Vulnerable a XSS (no sanitiza)" },
+            { lenguaje: "JS", categoria: "DOM", tipo: "Texto", elemento: "textContent", sintaxis: "element.textContent = x", descripcion: "Lee/escribe solo texto plano (seguro)", ejemplo: "span.textContent = \"Cargando...\";", errores: "No interpreta HTML (es texto literal)" },
+            { lenguaje: "JS", categoria: "Eventos", tipo: "Listener", elemento: "addEventListener()", sintaxis: "element.addEventListener(evt, fn)", descripcion: "Vincula función a evento", ejemplo: "btn.addEventListener(\"click\", manejarClick);", errores: "No pasar la función (ejecutarla)" },
+            { lenguaje: "JS", categoria: "Eventos", tipo: "Delegación", elemento: "event delegation", sintaxis: "padre.addEventListener(evt, fn)", descripcion: "Escucha evento en padre para hijos dinámicos", ejemplo: "tabla.addEventListener(\"click\", (e) => { if(e.target.matches(\".check\")) ... })", errores: "No usar e.target" },
+            { lenguaje: "JS", categoria: "Eventos", tipo: "Prevenir", elemento: "e.preventDefault()", sintaxis: "e.preventDefault();", descripcion: "Cancela acción por defecto", ejemplo: "e.preventDefault(); en submit", errores: "No ponerlo en forms (recarga la página)" },
+            { lenguaje: "JS", categoria: "APIs", tipo: "Petición", elemento: "fetch()", sintaxis: "fetch(url)", descripcion: "Petición HTTP (devuelve Promesa)", ejemplo: "const res = await fetch(API_URL);", errores: "No usar await (recibes Promise)" },
+            { lenguaje: "JS", categoria: "APIs", tipo: "Espera", elemento: "await", sintaxis: "await promise", descripcion: "Pausa async hasta resolver", ejemplo: "const datos = await res.json();", errores: "Usarlo fuera de async function" },
+            { lenguaje: "JS", categoria: "APIs", tipo: "Errores", elemento: "try/catch", sintaxis: "try { } catch(e) { }", descripcion: "Captura errores sin romper la app", ejemplo: "try { fetch... } catch(err) { console.error(err); }", errores: "No poner catch (error no manejado)" },
+            { lenguaje: "JS", categoria: "APIs", tipo: "Promesa", elemento: "Promise", sintaxis: "new Promise(fn)", descripcion: "Objeto que representa valor futuro", ejemplo: "fetch() devuelve una Promise", errores: "No entender then/catch" },
+            { lenguaje: "JS", categoria: "APIs", tipo: "Temporizador", elemento: "setTimeout()", sintaxis: "setTimeout(fn, ms)", descripcion: "Ejecuta función tras X milisegundos", ejemplo: "setTimeout(() => cerrarModal(), 2000);", errores: "No guardar el ID para cancelar" },
+            { lenguaje: "JS", categoria: "APIs", tipo: "Debounce", elemento: "debounce", sintaxis: "debounce(fn, ms)", descripcion: "Retrasa ejecución hasta que pare el input", ejemplo: "Para búsqueda en compras.html", errores: "No implementarlo en búsquedas (satura API)" },
+            { lenguaje: "JS", categoria: "Storage", tipo: "Guardar", elemento: "localStorage.setItem()", sintaxis: "localStorage.setItem(k, v)", descripcion: "Guarda string permanente", ejemplo: "localStorage.setItem(\"tema\", \"dark\");", errores: "Intentar guardar objeto (usar JSON.stringify)" },
+            { lenguaje: "JS", categoria: "Storage", tipo: "Leer", elemento: "localStorage.getItem()", sintaxis: "localStorage.getItem(k)", descripcion: "Recupera string o null", ejemplo: "const tema = localStorage.getItem(\"tema\");", errores: "No verificar si es null" },
+            { lenguaje: "JS", categoria: "Storage", tipo: "Stringificar", elemento: "JSON.stringify()", sintaxis: "JSON.stringify(obj)", descripcion: "Convierte objeto/array a string", ejemplo: "localStorage.setItem(\"tareas\", JSON.stringify(data));", errores: "Stringificar algo que ya es string" },
+            { lenguaje: "JS", categoria: "Storage", tipo: "Parsear", elemento: "JSON.parse()", sintaxis: "JSON.parse(str)", descripcion: "Convierte string a objeto/array", ejemplo: "const data = JSON.parse(localStorage.getItem(\"tareas\"));", errores: "Parsear null (da error)" },
+            { lenguaje: "JS", categoria: "Storage", tipo: "Borrar clave", elemento: "localStorage.removeItem()", sintaxis: "localStorage.removeItem(k)", descripcion: "Borra clave específica", ejemplo: "localStorage.removeItem(\"temp_filter\");", errores: "No saber qué se está borrando" },
+            { lenguaje: "JS", categoria: "Storage", tipo: "Borrar todo", elemento: "localStorage.clear()", sintaxis: "localStorage.clear();", descripcion: "Borra todo (cuidado)", ejemplo: "Solo en logout/reset", errores: "Borrar datos importantes sin confirmar" },
+            { lenguaje: "JS", categoria: "Errores", tipo: "Problema", elemento: "Olvidar await", sintaxis: "", descripcion: "Recibes Promise {<pending>}", ejemplo: "Usar const res = await fetch(...); ✅", errores: "No darse cuenta hasta que falla" },
+            { lenguaje: "JS", categoria: "Errores", tipo: "Problema", elemento: "Coma en vez de punto", sintaxis: "", descripcion: "\"datos,products\" → SyntaxError", ejemplo: "Usar siempre . para propiedades", errores: "Escribir rápido sin revisar" },
+            { lenguaje: "JS", categoria: "Errores", tipo: "Problema", elemento: "map vs forEach", sintaxis: "", descripcion: "map devuelve array y forEach no", ejemplo: "Usar map para transformar y forEach para DOM", errores: "Confundir cuándo usar cada uno" },
+            { lenguaje: "JS", categoria: "Errores", tipo: "Problema", elemento: "Modificación directa", sintaxis: "", descripcion: "Mutación array original rompe estado", ejemplo: "Usar [...arr] o .filter() para copias", errores: "No entender inmutabilidad" },
+            { lenguaje: "Git", categoria: "Básico", tipo: "Estado", elemento: "git status", sintaxis: "git status", descripcion: "Muestra archivos modificados", ejemplo: "git status (Ves app.js en rojo)", errores: "No hacer commit tras ver cambios" },
+            { lenguaje: "Git", categoria: "Básico", tipo: "Añadir archivo", elemento: "git add", sintaxis: "git add <archivo>", descripcion: "Prepara archivo para commit", ejemplo: "git add js/app.js", errores: "Añadir todos sin revisar (git add .)" },
+            { lenguaje: "Git", categoria: "Básico", tipo: "Añadir todo", elemento: "git add .", sintaxis: "git add .", descripcion: "Prepara TODOS los cambios", ejemplo: "git add . (Rápido)", errores: "Añadir archivos temporales o de debug" },
+            { lenguaje: "Git", categoria: "Básico", tipo: "Confirmar", elemento: "git commit", sintaxis: "git commit -m \"msg\"", descripcion: "Guarda punto de guardado", ejemplo: "git commit -m \"feat: añadir checkboxes\"", errores: "Mensaje vacío o poco descriptivo" },
+            { lenguaje: "Git", categoria: "Básico", tipo: "Historial", elemento: "git log", sintaxis: "git log --oneline", descripcion: "Historial de commits", ejemplo: "git log --oneline (Últimas 10 versiones)", errores: "No revisar antes de hacer push" },
+            { lenguaje: "Git", categoria: "Remoto", tipo: "Subir", elemento: "git push", sintaxis: "git push origin main", descripcion: "Sube commits a GitHub", ejemplo: "git push origin main", errores: "No hacer pull antes (conflictos)" },
+            { lenguaje: "Git", categoria: "Remoto", tipo: "Bajar", elemento: "git pull", sintaxis: "git pull origin main", descripcion: "Baja cambios de GitHub", ejemplo: "git pull origin main (Antes de programar)", errores: "No resolver conflictos tras pull" },
+            { lenguaje: "Git", categoria: "Remoto", tipo: "Clonar", elemento: "git clone", sintaxis: "git clone <url>", descripcion: "Descarga repo entero", ejemplo: "git clone https://github.com/LZumake/ksap", errores: "Clonar en carpeta incorrecta" },
+            { lenguaje: "Git", categoria: "Ramas", tipo: "Listar", elemento: "git branch", sintaxis: "git branch", descripcion: "Lista ramas disponibles", ejemplo: "git branch (Ves * main)", errores: "No saber en qué rama estás" },
+            { lenguaje: "Git", categoria: "Ramas", tipo: "Crear", elemento: "git branch", sintaxis: "git branch <nombre>", descripcion: "Crea rama nueva", ejemplo: "git branch feature/filtros-compras", errores: "No usar nombres descriptivos" },
+            { lenguaje: "Git", categoria: "Ramas", tipo: "Cambiar", elemento: "git checkout", sintaxis: "git checkout <nombre>", descripcion: "Cambia a esa rama", ejemplo: "git checkout feature/filtros-compras", errores: "No guardar cambios antes de cambiar" },
+            { lenguaje: "Git", categoria: "Ramas", tipo: "Unir", elemento: "git merge", sintaxis: "git merge <rama>", descripcion: "Une rama en actual", ejemplo: "git merge feature/filtros-compras (en main)", errores: "Hacer merge sin revisar conflictos" },
+            { lenguaje: "Git", categoria: "Errores", tipo: "Problema", elemento: "Commit mensaje vacío", sintaxis: "", descripcion: "git commit --amend -m \"mensaje correcto\"", ejemplo: "", errores: "No revisar el mensaje antes de confirmar" },
+            { lenguaje: "Git", categoria: "Errores", tipo: "Problema", elemento: "Archivo en commit por error", sintaxis: "", descripcion: "git reset HEAD <archivo> (Lo saca del commit)", ejemplo: "", errores: "No usar git status antes de commit" },
+            { lenguaje: "Git", categoria: "Errores", tipo: "Problema", elemento: "Merge Conflict", sintaxis: "", descripcion: "Abre archivo y busca <<<<<<< y elige código", ejemplo: "", errores: "No entrar en pánico (es normal)" },
+            { lenguaje: "Git", categoria: "Buenas Prácticas", tipo: "Mensajes estándar", elemento: "Convencional", sintaxis: "feat: / fix: / docs:", descripcion: "feat: (nueva función) / fix: (bug) / docs: (documentación)", ejemplo: "Usar prefijos convencionales", errores: "No seguir convención (caos en historial)" },
+            { lenguaje: "Regex", categoria: "Sintaxis", tipo: "Inicio", elemento: "^", sintaxis: "^patrón", descripcion: "Inicio de cadena", ejemplo: "^Hola (Empieza por \"Hola\")", errores: "No usarlo (encuentra en cualquier posición)" },
+            { lenguaje: "Regex", categoria: "Sintaxis", tipo: "Final", elemento: "$", sintaxis: "patrón$", descripcion: "Final de cadena", ejemplo: "mundo$ (Termina en \"mundo\")", errores: "No usarlo (valida parcialmente)" },
+            { lenguaje: "Regex", categoria: "Sintaxis", tipo: "Conjunto", elemento: "[abc]", sintaxis: "[abc]", descripcion: "Coincide con a o b o c", ejemplo: "[aeiou] (Cualquier vocal)", errores: "No escapar caracteres especiales" },
+            { lenguaje: "Regex", categoria: "Sintaxis", tipo: "Rango", elemento: "[a-z]", sintaxis: "[a-z]", descripcion: "Rango de letras", ejemplo: "[A-Z] (Cualquier mayúscula)", errores: "Confundir [a-z] con [A-Z]" },
+            { lenguaje: "Regex", categoria: "Sintaxis", tipo: "Dígito", elemento: "\\d", sintaxis: "\\d", descripcion: "Cualquier dígito (0-9)", ejemplo: "\\d{3} (3 números seguidos)", errores: "Usar d en lugar de \\d" },
+            { lenguaje: "Regex", categoria: "Sintaxis", tipo: "Palabra", elemento: "\\w", sintaxis: "\\w", descripcion: "Letra y número o guion bajo", ejemplo: "\\w+ (Palabra completa)", errores: "No saber que incluye números" },
+            { lenguaje: "Regex", categoria: "Sintaxis", tipo: "Espacio", elemento: "\\s", sintaxis: "\\s", descripcion: "Espacio en blanco", ejemplo: "Juan\\sPerez", errores: "No saber que incluye tabs y saltos" },
+            { lenguaje: "Regex", categoria: "Cuantificador", tipo: "Uno o más", elemento: "+", sintaxis: "patrón+", descripcion: "1 o más veces", ejemplo: "\\d+ (Uno o varios números)", errores: "Confundir + con *" },
+            { lenguaje: "Regex", categoria: "Cuantificador", tipo: "Cero o más", elemento: "*", sintaxis: "patrón*", descripcion: "0 o más veces", ejemplo: "a*b (b, ab, aab)", errores: "Hacer match demasiado amplio" },
+            { lenguaje: "Regex", categoria: "Cuantificador", tipo: "Opcional", elemento: "?", sintaxis: "patrón?", descripcion: "0 o 1 vez (opcional)", ejemplo: "colou?r (color o colour)", errores: "No saber que es greedy" },
+            { lenguaje: "Regex", categoria: "Cuantificador", tipo: "Exacto", elemento: "{n}", sintaxis: "patrón{n}", descripcion: "Exactamente n veces", ejemplo: "\\d{4} (4 dígitos, ej: año)", errores: "No contar bien" },
+            { lenguaje: "Regex", categoria: "Cuantificador", tipo: "Rango", elemento: "{n,m}", sintaxis: "patrón{n,m}", descripcion: "Entre n y m veces", ejemplo: "\\w{3,10} (Entre 3 y 10 caracteres)", errores: "Invertir n y m" },
+            { lenguaje: "Regex", categoria: "Patrones", tipo: "Email", elemento: "Email Regex", sintaxis: "/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/", descripcion: "Texto + @ + texto + . + texto", ejemplo: "/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/", errores: "No validar en servidor también" },
+            { lenguaje: "Regex", categoria: "Patrones", tipo: "Contraseña", elemento: "Pass Regex", sintaxis: "/^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$/", descripcion: "Mín 8 chars y 1 mayúscula y 1 número", ejemplo: "/^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$/", errores: "No usar lookaheads correctamente" },
+            { lenguaje: "Regex", categoria: "Patrones", tipo: "Nombre", elemento: "Name Regex", sintaxis: "/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]{3,}$/", descripcion: "Solo letras con tildes/ñ y mín 3 chars", ejemplo: "/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]{3,}$/", errores: "No incluir tildes y ñ" },
+            { lenguaje: "Regex", categoria: "Patrones", tipo: "Teléfono", elemento: "Phone Regex", sintaxis: "/^[679]\\d{8}$/", descripcion: "Empieza por 6, 7 o 9 y 8 dígitos", ejemplo: "/^[679]\\d{8}$/ (España)", errores: "No adaptar al país" },
+            { lenguaje: "Regex", categoria: "Patrones", tipo: "Código Postal", elemento: "CP Regex", sintaxis: "/^\\d{5}$/", descripcion: "Exactamente 5 números", ejemplo: "/^\\d{5}$/ (España)", errores: "No validar formato" },
+            { lenguaje: "Regex", categoria: "Métodos", tipo: "Test", elemento: ".test(str)", sintaxis: "regex.test(str)", descripcion: "Devuelve true/false", ejemplo: "regexEmail.test(input.value) (Validar form)", errores: "No usarlo para validación simple" },
+            { lenguaje: "Regex", categoria: "Métodos", tipo: "Match", elemento: ".match(regex)", sintaxis: "str.match(regex)", descripcion: "Array de coincidencias", ejemplo: "\"Tel: 600123456\".match(/\\d+/) → [\"600123456\"]", errores: "No usar g flag para todas las coincidencias" },
+            { lenguaje: "Regex", categoria: "Métodos", tipo: "Replace", elemento: ".replace(regex, new)", sintaxis: "str.replace(regex, new)", descripcion: "Sustituye texto", ejemplo: "\"Hola mundo\".replace(/mundo/, \"casa\")", errores: "No usar g flag (solo reemplaza primero)" },
+            { lenguaje: "Regex", categoria: "Errores", tipo: "Problema", elemento: "Olvidar ^ y $", sintaxis: "", descripcion: "Valida si patrón existe en cualquier parte", ejemplo: "\"abc123def\".test(/\\d+/) da true", errores: "No anclar el patrón" },
+            { lenguaje: "Regex", categoria: "Errores", tipo: "Problema", elemento: "No escapar punto", sintaxis: "", descripcion: ". en regex = \"cualquier carácter\"", ejemplo: "Para punto real usar \\.", errores: "Buscar dominio y encontrar cualquier cosa" },
+            { lenguaje: "Regex", categoria: "Errores", tipo: "Problema", elemento: "Regex muy compleja", sintaxis: "", descripcion: "Difícil de mantener", ejemplo: "Dividir en partes o usar validadores HTML5", errores: "No probar con casos borde" }
+        ];
+
+        // Estado
+        let activeFilters = {
+            lenguaje: null,
+            categoria: null,
+            tipo: null
+        };
+        let searchQuery = "";
+
+        // DOM Elements
+        const filterLenguajeEl = document.getElementById('filter-lenguaje');
+        const filterCategoriaEl = document.getElementById('filter-categoria');
+        const filterTipoEl = document.getElementById('filter-tipo');
+        const cardsContainerEl = document.getElementById('cards-container');
+        const emptyStateEl = document.getElementById('empty-state');
+        const resultCountEl = document.getElementById('result-count');
+        const clearFiltersBtn = document.getElementById('clear-filters');
+        const searchInput = document.getElementById('search-input');
+        const themeToggle = document.getElementById('theme-toggle');
+
+        // Theme Toggle
+        if (localStorage.getItem('ksap_dark_mode') === 'true') {
+            document.documentElement.classList.add('dark');
+        }
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('ksap_dark_mode', document.documentElement.classList.contains('dark'));
+        });
+
+        // Helpers
+        function getUniqueValues(column, parentFilters) {
+            let filtered = chuleteroData;
+            if (parentFilters.lenguaje) {
+                filtered = filtered.filter(d => d.lenguaje === parentFilters.lenguaje);
+            }
+            if (parentFilters.categoria) {
+                filtered = filtered.filter(d => d.categoria === parentFilters.categoria);
+            }
+            return [...new Set(filtered.map(d => d[column]))].sort();
+        }
+
+        function createChip(text, isActive, onClick) {
+            const btn = document.createElement('button');
+            btn.className = `chip whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:border-ksap-primary dark:hover:border-ksap-primary ${isActive ? 'active' : ''}`;
+            btn.textContent = text;
+            btn.onclick = onClick;
+            return btn;
+        }
+
+        function renderFilters() {
+            // Lenguaje
+            filterLenguajeEl.innerHTML = '';
+            const lenguajes = getUniqueValues('lenguaje', { lenguaje: null, categoria: null });
+            lenguajes.forEach(lang => {
+                filterLenguajeEl.appendChild(createChip(
+                    lang, 
+                    activeFilters.lenguaje === lang, 
+                    () => toggleFilter('lenguaje', lang)
+                ));
+            });
+
+            // Categoría
+            filterCategoriaEl.innerHTML = '';
+            if (activeFilters.lenguaje) {
+                const categorias = getUniqueValues('categoria', { lenguaje: activeFilters.lenguaje, categoria: null });
+                categorias.forEach(cat => {
+                    filterCategoriaEl.appendChild(createChip(
+                        cat, 
+                        activeFilters.categoria === cat, 
+                        () => toggleFilter('categoria', cat)
+                    ));
+                });
+            }
+
+            // Tipo
+            filterTipoEl.innerHTML = '';
+            if (activeFilters.lenguaje && activeFilters.categoria) {
+                const tipos = getUniqueValues('tipo', { lenguaje: activeFilters.lenguaje, categoria: activeFilters.categoria });
+                tipos.forEach(tipo => {
+                    filterTipoEl.appendChild(createChip(
+                        tipo, 
+                        activeFilters.tipo === tipo, 
+                        () => toggleFilter('tipo', tipo)
+                    ));
+                });
+            }
+
+            // Clear button visibility
+            const hasFilters = activeFilters.lenguaje || activeFilters.categoria || activeFilters.tipo;
+            clearFiltersBtn.classList.toggle('hidden', !hasFilters);
+        }
+
+        function toggleFilter(level, value) {
+            if (activeFilters[level] === value) {
+                // Deselect this and all downstream filters
+                activeFilters[level] = null;
+                if (level === 'lenguaje') {
+                    activeFilters.categoria = null;
+                    activeFilters.tipo = null;
+                } else if (level === 'categoria') {
+                    activeFilters.tipo = null;
+                }
+            } else {
+                // Select this, clear downstream
+                activeFilters[level] = value;
+                if (level === 'lenguaje') {
+                    activeFilters.categoria = null;
+                    activeFilters.tipo = null;
+                } else if (level === 'categoria') {
+                    activeFilters.tipo = null;
+                }
+            }
+            renderFilters();
+            renderCards();
+        }
+
+        function renderCards() {
+            let filtered = chuleteroData;
+
+            // Apply filters
+            if (activeFilters.lenguaje) filtered = filtered.filter(d => d.lenguaje === activeFilters.lenguaje);
+            if (activeFilters.categoria) filtered = filtered.filter(d => d.categoria === activeFilters.categoria);
+            if (activeFilters.tipo) filtered = filtered.filter(d => d.tipo === activeFilters.tipo);
+
+            // Apply search
+            if (searchQuery) {
+                const q = searchQuery.toLowerCase();
+                filtered = filtered.filter(d => 
+                    d.elemento.toLowerCase().includes(q) ||
+                    d.sintaxis.toLowerCase().includes(q) ||
+                    d.descripcion.toLowerCase().includes(q) ||
+                    d.ejemplo.toLowerCase().includes(q) ||
+                    d.errores.toLowerCase().includes(q)
+                );
+            }
+
+            resultCountEl.textContent = filtered.length;
+
+            if (filtered.length === 0) {
+                cardsContainerEl.innerHTML = '';
+                emptyStateEl.classList.remove('hidden');
+                emptyStateEl.classList.add('flex');
+                return;
+            }
+
+            emptyStateEl.classList.add('hidden');
+            emptyStateEl.classList.remove('flex');
+
+            cardsContainerEl.innerHTML = filtered.map(item => `
+                <div class="card-hover bg-white dark:bg-ksap-surface rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 uppercase tracking-wide">
+                                ${item.lenguaje}
+                            </span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">
+                                ${item.categoria} > ${item.tipo}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                        ${item.elemento}
+                    </h3>
+                    
+                    ${item.sintaxis ? `
+                    <div class="mb-3">
+                        <code class="block bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm font-mono text-ksap-primary overflow-x-auto">
+                            ${item.sintaxis}
+                        </code>
+                    </div>
+                    ` : ''}
+                    
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 leading-relaxed">
+                        ${item.descripcion}
+                    </p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                        <div class="bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800 rounded-lg p-3">
+                            <div class="text-xs font-semibold text-green-700 dark:text-green-400 mb-1 uppercase tracking-wider">Ejemplo KSAP</div>
+                            <div class="text-gray-700 dark:text-gray-300">${item.ejemplo}</div>
+                        </div>
+                        <div class="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-lg p-3">
+                            <div class="text-xs font-semibold text-red-700 dark:text-red-400 mb-1 uppercase tracking-wider">Errores Comunes</div>
+                            <div class="text-gray-700 dark:text-gray-300">${item.errores}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Event Listeners
+        clearFiltersBtn.addEventListener('click', () => {
+            activeFilters = { lenguaje: null, categoria: null, tipo: null };
+            renderFilters();
+            renderCards();
+        });
+
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchQuery = e.target.value.trim();
+                renderCards();
+            }, 300);
+        });
+
+        // Init
+        renderFilters();
+        renderCards();
+    </script>
+</body>
+</html>
+
