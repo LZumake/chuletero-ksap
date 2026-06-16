@@ -30,9 +30,15 @@
             color: white; border-color: transparent;
             box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
         }
-        .card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-        .card-hover:active { transform: scale(0.98); }
-        .modal-enter { animation: modalSlideIn 0.3s ease-out forwards; }
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-hover:active {
+            transform: scale(0.98);
+        }
+        .modal-enter {
+            animation: modalSlideIn 0.3s ease-out forwards;
+        }
         @keyframes modalSlideIn {
             from { opacity: 0; transform: translateY(20px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
@@ -49,15 +55,17 @@
                     📚 Chuletero KSAP
                 </h1>
                 <div class="flex gap-2">
-                    <button id="reset-data-btn" class="p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 transition-colors" title="Restablecer datos originales">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    </button>
                     <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" aria-label="Cambiar tema">
                         <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                     </button>
+                    <button id="reset-data-btn" class="p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 transition-colors" title="Restablecer datos originales" aria-label="Restablecer datos">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
                 </div>
             </div>
+            
+            <!-- Search -->
             <div class="relative">
                 <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 <input type="text" id="search-input" placeholder="Buscar elemento, sintaxis o error..." 
@@ -73,6 +81,7 @@
                 <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Filtros acumulativos</span>
                 <button id="clear-filters" class="text-xs text-ksap-primary font-medium hover:underline hidden">Limpiar todo</button>
             </div>
+            
             <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1" id="filter-lenguaje"></div>
             <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1" id="filter-categoria"></div>
             <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1" id="filter-tipo"></div>
@@ -86,7 +95,9 @@
                 Resultados: <span id="result-count" class="text-ksap-primary">0</span>
             </h2>
         </div>
+        
         <div id="cards-container" class="space-y-4"></div>
+        
         <div id="empty-state" class="hidden flex-col items-center justify-center py-12 text-center">
             <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
                 <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -107,11 +118,12 @@
         <div class="absolute inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center p-4">
             <div class="bg-white dark:bg-ksap-surface w-full max-w-lg rounded-t-2xl md:rounded-2xl shadow-2xl modal-enter max-h-[90vh] overflow-y-auto">
                 <div class="sticky top-0 bg-white dark:bg-ksap-surface border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between z-10">
-                    <h3 id="modal-title" class="text-lg font-bold text-gray-900 dark:text-white">Añadir Nuevo Registro</h3>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Añadir Nuevo Registro</h3>
                     <button id="modal-close" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                         <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
+                
                 <form id="add-form" class="p-4 space-y-4">
                     <div class="grid grid-cols-2 gap-4">
                         <div>
@@ -125,23 +137,28 @@
                             <datalist id="categoria-list"></datalist>
                         </div>
                     </div>
+                    
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase mb-1">Tipo de Elemento *</label>
                         <input type="text" name="tipo" required list="tipo-list" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ksap-primary text-sm">
                         <datalist id="tipo-list"></datalist>
                     </div>
+
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase mb-1">Elemento *</label>
                         <input type="text" name="elemento" required class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ksap-primary text-sm font-semibold">
                     </div>
+
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase mb-1">Sintaxis / Patrón</label>
                         <input type="text" name="sintaxis" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ksap-primary text-sm font-mono text-ksap-primary">
                     </div>
+
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase mb-1">Descripción *</label>
                         <textarea name="descripcion" required rows="2" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ksap-primary text-sm resize-none"></textarea>
                     </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase mb-1">Ejemplo KSAP</label>
@@ -152,11 +169,9 @@
                             <textarea name="errores" rows="2" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ksap-primary text-sm resize-none"></textarea>
                         </div>
                     </div>
-                    <div class="pt-2 flex gap-3">
-                        <button type="button" id="delete-btn" class="hidden flex-1 py-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-semibold rounded-xl border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/40 transition-all active:scale-[0.98]">
-                            Eliminar
-                        </button>
-                        <button type="submit" id="submit-btn" class="flex-[2] py-3 bg-gradient-to-r from-ksap-primary to-ksap-secondary text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all active:scale-[0.98]">
+
+                    <div class="pt-2">
+                        <button type="submit" class="w-full py-3 bg-gradient-to-r from-ksap-primary to-ksap-secondary text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all active:scale-[0.98]">
                             Guardar Registro
                         </button>
                     </div>
@@ -166,8 +181,7 @@
     </div>
 
     <script>
-        // Datos extraídos directamente de CHULETERO.xlsx
-        const defaultDataRaw = [
+        const defaultData = [
             { lenguaje: "HTML", categoria: "Estructura", tipo: "Declaración", elemento: "DOCTYPE", sintaxis: "<!DOCTYPE html>", descripcion: "Declara HTML5 moderno", ejemplo: "Primera línea de index.html", errores: "Olvidarlo activa el 'quirks mode'" },
             { lenguaje: "HTML", categoria: "Estructura", tipo: "Etiqueta", elemento: "html", sintaxis: "<html lang=\"es\">", descripcion: "Raíz del documento + idioma", ejemplo: "<html lang=\"es\"> en todas las páginas", errores: "No poner lang perjudica el SEO" },
             { lenguaje: "HTML", categoria: "Estructura", tipo: "Contenedor", elemento: "head", sintaxis: "<head>...</head>", descripcion: "Metadatos (no visibles)", ejemplo: "<head><meta charset=\"UTF-8\"></head>", errores: "Confundirlo con body" },
@@ -324,67 +338,28 @@
             { lenguaje: "Regex", categoria: "Errores", tipo: "Problema", elemento: "Regex muy compleja", sintaxis: "", descripcion: "Difícil de mantener", ejemplo: "Dividir en partes o usar validadores HTML5", errores: "No probar con casos borde" }
         ];
 
-        const defaultData = defaultDataRaw.map((item, index) => ({ ...item, id: `def_${index}`, isCustom: false }));
+        let chuleteroData = [];
         let activeFilters = { lenguaje: null, categoria: null, tipo: null };
         let searchQuery = "";
-        let editingId = null;
 
-        function getActiveData() {
-            let customData = [];
-            let deletedIds = [];
-            try {
-                const savedCustom = localStorage.getItem('ksap_chuletero_custom');
-                if (savedCustom) customData = JSON.parse(savedCustom);
-                const savedDeleted = localStorage.getItem('ksap_chuletero_deleted');
-                if (savedDeleted) deletedIds = JSON.parse(savedDeleted);
-            } catch (e) {
-                console.warn("Error al cargar localStorage (posiblemente bloqueado):", e);
-            }
-            
-            let active = defaultData.filter(d => !deletedIds.includes(d.id));
-            
-            customData.forEach(c => {
-                const idx = active.findIndex(d => d.id === c.id);
-                if (idx >= 0) active[idx] = { ...c, isCustom: true };
-                else active.push({ ...c, isCustom: true });
-            });
-            
-            return active;
+        function loadData() {
+            const saved = localStorage.getItem('ksap_chuletero_custom');
+            const customData = saved ? JSON.parse(saved) : [];
+            chuleteroData = [...defaultData, ...customData];
         }
 
-        function saveCustomData(item) {
-            const savedCustom = localStorage.getItem('ksap_chuletero_custom');
-            let customData = savedCustom ? JSON.parse(savedCustom) : [];
-            const existingIdx = customData.findIndex(d => d.id === item.id);
-            if (existingIdx >= 0) customData[existingIdx] = item;
-            else customData.push(item);
+        function saveCustomData(customItem) {
+            const saved = localStorage.getItem('ksap_chuletero_custom');
+            const customData = saved ? JSON.parse(saved) : [];
+            customData.push(customItem);
             localStorage.setItem('ksap_chuletero_custom', JSON.stringify(customData));
+            loadData();
         }
-
-        window.deleteData = function(id) {
-            if (!confirm('¿Estás seguro de que quieres eliminar este registro?')) return;
-            const isDefault = id.startsWith('def_');
-            if (isDefault) {
-                const savedDeleted = localStorage.getItem('ksap_chuletero_deleted');
-                let deletedIds = savedDeleted ? JSON.parse(savedDeleted) : [];
-                if (!deletedIds.includes(id)) {
-                    deletedIds.push(id);
-                    localStorage.setItem('ksap_chuletero_deleted', JSON.stringify(deletedIds));
-                }
-            } else {
-                const savedCustom = localStorage.getItem('ksap_chuletero_custom');
-                let customData = savedCustom ? JSON.parse(savedCustom) : [];
-                customData = customData.filter(d => d.id !== id);
-                localStorage.setItem('ksap_chuletero_custom', JSON.stringify(customData));
-            }
-            renderFilters();
-            renderCards();
-        };
 
         function resetData() {
-            if (confirm('¿Estás seguro de que quieres borrar todos los cambios y volver a los datos originales?')) {
+            if (confirm('¿Estás seguro de que quieres borrar todos los registros personalizados y volver a los datos originales?')) {
                 localStorage.removeItem('ksap_chuletero_custom');
-                localStorage.removeItem('ksap_chuletero_deleted');
+                loadData();
                 activeFilters = { lenguaje: null, categoria: null, tipo: null };
                 searchQuery = "";
                 document.getElementById('search-input').value = "";
@@ -394,10 +369,10 @@
         }
 
         function getUniqueValues(column, parentFilters) {
-            let data = getActiveData();
-            if (parentFilters.lenguaje) data = data.filter(d => d.lenguaje === parentFilters.lenguaje);
-            if (parentFilters.categoria) data = data.filter(d => d.categoria === parentFilters.categoria);
-            return [...new Set(data.map(d => d[column]))].sort();
+            let filtered = chuleteroData;
+            if (parentFilters.lenguaje) filtered = filtered.filter(d => d.lenguaje === parentFilters.lenguaje);
+            if (parentFilters.categoria) filtered = filtered.filter(d => d.categoria === parentFilters.categoria);
+            return [...new Set(filtered.map(d => d[column]))].sort();
         }
 
         function createChip(text, isActive, onClick) {
@@ -409,37 +384,40 @@
         }
 
         function updateDatalists() {
-            const data = getActiveData();
-            document.getElementById('lenguaje-list').innerHTML = [...new Set(data.map(d => d.lenguaje))].sort().map(l => `<option value="${l}">`).join('');
-            document.getElementById('categoria-list').innerHTML = [...new Set(data.map(d => d.categoria))].sort().map(c => `<option value="${c}">`).join('');
-            document.getElementById('tipo-list').innerHTML = [...new Set(data.map(d => d.tipo))].sort().map(t => `<option value="${t}">`).join('');
+            const lenguajes = [...new Set(chuleteroData.map(d => d.lenguaje))].sort();
+            const categorias = [...new Set(chuleteroData.map(d => d.categoria))].sort();
+            const tipos = [...new Set(chuleteroData.map(d => d.tipo))].sort();
+
+            document.getElementById('lenguaje-list').innerHTML = lenguajes.map(l => `<option value="${l}">`).join('');
+            document.getElementById('categoria-list').innerHTML = categorias.map(c => `<option value="${c}">`).join('');
+            document.getElementById('tipo-list').innerHTML = tipos.map(t => `<option value="${t}">`).join('');
         }
 
         function renderFilters() {
-            const filterLenguajeEl = document.getElementById('filter-lenguaje');
-            const filterCategoriaEl = document.getElementById('filter-categoria');
-            const filterTipoEl = document.getElementById('filter-tipo');
-            
             filterLenguajeEl.innerHTML = '';
-            getUniqueValues('lenguaje', { lenguaje: null, categoria: null }).forEach(lang => {
+            const lenguajes = getUniqueValues('lenguaje', { lenguaje: null, categoria: null });
+            lenguajes.forEach(lang => {
                 filterLenguajeEl.appendChild(createChip(lang, activeFilters.lenguaje === lang, () => toggleFilter('lenguaje', lang)));
             });
 
             filterCategoriaEl.innerHTML = '';
             if (activeFilters.lenguaje) {
-                getUniqueValues('categoria', { lenguaje: activeFilters.lenguaje, categoria: null }).forEach(cat => {
+                const categorias = getUniqueValues('categoria', { lenguaje: activeFilters.lenguaje, categoria: null });
+                categorias.forEach(cat => {
                     filterCategoriaEl.appendChild(createChip(cat, activeFilters.categoria === cat, () => toggleFilter('categoria', cat)));
                 });
             }
 
             filterTipoEl.innerHTML = '';
             if (activeFilters.lenguaje && activeFilters.categoria) {
-                getUniqueValues('tipo', { lenguaje: activeFilters.lenguaje, categoria: activeFilters.categoria }).forEach(tipo => {
+                const tipos = getUniqueValues('tipo', { lenguaje: activeFilters.lenguaje, categoria: activeFilters.categoria });
+                tipos.forEach(tipo => {
                     filterTipoEl.appendChild(createChip(tipo, activeFilters.tipo === tipo, () => toggleFilter('tipo', tipo)));
                 });
             }
 
-            document.getElementById('clear-filters').classList.toggle('hidden', !activeFilters.lenguaje && !activeFilters.categoria && !activeFilters.tipo);
+            const hasFilters = activeFilters.lenguaje || activeFilters.categoria || activeFilters.tipo;
+            clearFiltersBtn.classList.toggle('hidden', !hasFilters);
         }
 
         function toggleFilter(level, value) {
@@ -457,20 +435,19 @@
         }
 
         function renderCards() {
-            let data = getActiveData();
-            if (activeFilters.lenguaje) data = data.filter(d => d.lenguaje === activeFilters.lenguaje);
-            if (activeFilters.categoria) data = data.filter(d => d.categoria === activeFilters.categoria);
-            if (activeFilters.tipo) data = data.filter(d => d.tipo === activeFilters.tipo);
+            let filtered = chuleteroData;
+            if (activeFilters.lenguaje) filtered = filtered.filter(d => d.lenguaje === activeFilters.lenguaje);
+            if (activeFilters.categoria) filtered = filtered.filter(d => d.categoria === activeFilters.categoria);
+            if (activeFilters.tipo) filtered = filtered.filter(d => d.tipo === activeFilters.tipo);
 
             if (searchQuery) {
                 const q = searchQuery.toLowerCase();
-                // Protección contra campos nulos o indefinidos
-                data = data.filter(d => 
-                    (d.elemento || '').toLowerCase().includes(q) ||
-                    (d.sintaxis || '').toLowerCase().includes(q) ||
-                    (d.descripcion || '').toLowerCase().includes(q) ||
-                    (d.ejemplo || '').toLowerCase().includes(q) ||
-                    (d.errores || '').toLowerCase().includes(q)
+                filtered = filtered.filter(d => 
+                    d.elemento.toLowerCase().includes(q) ||
+                    (d.sintaxis && d.sintaxis.toLowerCase().includes(q)) ||
+                    d.descripcion.toLowerCase().includes(q) ||
+                    (d.ejemplo && d.ejemplo.toLowerCase().includes(q)) ||
+                    (d.errores && d.errores.toLowerCase().includes(q))
                 );
             }
 
@@ -492,83 +469,60 @@
                 <div class="card-hover bg-white dark:bg-ksap-surface rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700">
                     <div class="flex items-start justify-between mb-3">
                         <div class="flex items-center gap-2 flex-wrap">
-                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 uppercase tracking-wide">${item.lenguaje}</span>
-                            <span class="text-xs text-gray-500 dark:text-gray-400">${item.categoria} > ${item.tipo}</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="window.openModal('${item.id}')" class="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors" title="Editar">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                            </button>
-                            <button onclick="window.deleteData('${item.id}')" class="p-1.5 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors" title="Eliminar">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </button>
+                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 uppercase tracking-wide">
+                                ${item.lenguaje}
+                            </span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">
+                                ${item.categoria} > ${item.tipo}
+                            </span>
                         </div>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">${item.elemento}</h3>
                     ${item.sintaxis ? `<div class="mb-3"><code class="block bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm font-mono text-ksap-primary overflow-x-auto">${item.sintaxis}</code></div>` : ''}
                     <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 leading-relaxed">${item.descripcion}</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                        ${item.ejemplo ? `<div class="bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800 rounded-lg p-3"><div class="text-xs font-semibold text-green-700 dark:text-green-400 mb-1 uppercase tracking-wider">Ejemplo KSAP</div><div class="text-gray-700 dark:text-gray-300">${item.ejemplo}</div></div>` : '<div></div>'}
-                        ${item.errores ? `<div class="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-lg p-3"><div class="text-xs font-semibold text-red-700 dark:text-red-400 mb-1 uppercase tracking-wider">Errores Comunes</div><div class="text-gray-700 dark:text-gray-300">${item.errores}</div></div>` : '<div></div>'}
+                        ${item.ejemplo ? `
+                        <div class="bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800 rounded-lg p-3">
+                            <div class="text-xs font-semibold text-green-700 dark:text-green-400 mb-1 uppercase tracking-wider">Ejemplo KSAP</div>
+                            <div class="text-gray-700 dark:text-gray-300">${item.ejemplo}</div>
+                        </div>` : '<div></div>'}
+                        ${item.errores ? `
+                        <div class="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-lg p-3">
+                            <div class="text-xs font-semibold text-red-700 dark:text-red-400 mb-1 uppercase tracking-wider">Errores Comunes</div>
+                            <div class="text-gray-700 dark:text-gray-300">${item.errores}</div>
+                        </div>` : '<div></div>'}
                     </div>
                 </div>
             `).join('');
         }
 
+        // Modal Logic
         const modal = document.getElementById('add-modal');
         const fabAdd = document.getElementById('fab-add');
         const modalClose = document.getElementById('modal-close');
         const modalBackdrop = document.getElementById('modal-backdrop');
         const addForm = document.getElementById('add-form');
-        const modalTitle = document.getElementById('modal-title');
-        const submitBtn = document.getElementById('submit-btn');
-        const deleteBtn = document.getElementById('delete-btn');
 
-        window.openModal = function(id = null) {
+        function openModal() {
             updateDatalists();
-            editingId = id;
-            const data = getActiveData();
-            const itemToEdit = id ? data.find(d => d.id === id) : null;
-            
-            if (itemToEdit) {
-                addForm.lenguaje.value = itemToEdit.lenguaje;
-                addForm.categoria.value = itemToEdit.categoria;
-                addForm.tipo.value = itemToEdit.tipo;
-                addForm.elemento.value = itemToEdit.elemento;
-                addForm.sintaxis.value = itemToEdit.sintaxis || '';
-                addForm.descripcion.value = itemToEdit.descripcion;
-                addForm.ejemplo.value = itemToEdit.ejemplo || '';
-                addForm.errores.value = itemToEdit.errores || '';
-                modalTitle.textContent = 'Editar Registro';
-                submitBtn.textContent = 'Actualizar Registro';
-                deleteBtn.classList.remove('hidden');
-            } else {
-                addForm.reset();
-                modalTitle.textContent = 'Añadir Nuevo Registro';
-                submitBtn.textContent = 'Guardar Registro';
-                deleteBtn.classList.add('hidden');
-            }
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
-        };
+        }
 
         function closeModal() {
             modal.classList.add('hidden');
             document.body.style.overflow = '';
             addForm.reset();
-            editingId = null;
         }
 
-        fabAdd.addEventListener('click', () => window.openModal(null));
+        fabAdd.addEventListener('click', openModal);
         modalClose.addEventListener('click', closeModal);
         modalBackdrop.addEventListener('click', closeModal);
-        deleteBtn.addEventListener('click', () => { if (editingId) { window.deleteData(editingId); closeModal(); } });
 
         addForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const formData = new FormData(addForm);
             const newItem = {
-                id: editingId || 'custom_' + Date.now(),
                 lenguaje: formData.get('lenguaje').trim(),
                 categoria: formData.get('categoria').trim(),
                 tipo: formData.get('tipo').trim(),
@@ -578,14 +532,20 @@
                 ejemplo: formData.get('ejemplo').trim(),
                 errores: formData.get('errores').trim()
             };
+
             saveCustomData(newItem);
             closeModal();
             renderFilters();
             renderCards();
+            
+            // Scroll to top to see new item if filters match
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        if (localStorage.getItem('ksap_dark_mode') === 'true') document.documentElement.classList.add('dark');
+        // Theme & Search
+        if (localStorage.getItem('ksap_dark_mode') === 'true') {
+            document.documentElement.classList.add('dark');
+        }
         document.getElementById('theme-toggle').addEventListener('click', () => {
             document.documentElement.classList.toggle('dark');
             localStorage.setItem('ksap_dark_mode', document.documentElement.classList.contains('dark'));
@@ -607,35 +567,19 @@
             }, 300);
         });
 
-        // INICIALIZACIÓN CON DIAGNÓSTICO VISIBLE
-        document.addEventListener('DOMContentLoaded', () => {
-            try {
-                if (!defaultData || defaultData.length === 0) throw new Error("La base de datos de registros está vacía.");
-                console.log(`✅ Inicializando Chuletero KSAP con ${defaultData.length} registros.`);
-                renderFilters();
-                renderCards();
-            } catch (error) {
-                console.error('❌ Error crítico al inicializar:', error);
-                const cardsContainerEl = document.getElementById('cards-container');
-                if (cardsContainerEl) {
-                    cardsContainerEl.innerHTML = `
-                        <div class="p-6 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-xl border-2 border-red-200 dark:border-red-800 text-center">
-                            <h3 class="text-xl font-bold mb-3">⚠️ Error al cargar la aplicación</h3>
-                            <p class="text-sm mb-4 font-mono bg-red-100 dark:bg-red-900/40 p-3 rounded-lg text-left">${error.message}</p>
-                            <p class="text-sm mb-4">Esto puede deberse a un error de sintaxis o a un almacenamiento local corrupto/bloqueado.</p>
-                            <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                                <button onclick="localStorage.clear(); location.reload();" class="px-6 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-all shadow-md">
-                                    🗑️ Borrar datos y Recargar
-                                </button>
-                                <button onclick="location.reload();" class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-bold rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-all">
-                                    🔄 Solo Recargar
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-        });
+        // DOM Elements
+        const filterLenguajeEl = document.getElementById('filter-lenguaje');
+        const filterCategoriaEl = document.getElementById('filter-categoria');
+        const filterTipoEl = document.getElementById('filter-tipo');
+        const cardsContainerEl = document.getElementById('cards-container');
+        const emptyStateEl = document.getElementById('empty-state');
+        const resultCountEl = document.getElementById('result-count');
+        const clearFiltersBtn = document.getElementById('clear-filters');
+
+        // Init
+        loadData();
+        renderFilters();
+        renderCards();
     </script>
 </body>
 </html>
