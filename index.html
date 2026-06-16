@@ -53,6 +53,13 @@
         .card-hover:active {
             transform: scale(0.98);
         }
+        .modal-enter {
+            animation: modalSlideIn 0.3s ease-out forwards;
+        }
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-ksap-dark text-gray-800 dark:text-gray-100 min-h-screen flex flex-col">
@@ -64,10 +71,15 @@
                 <h1 class="text-xl font-bold bg-gradient-to-r from-ksap-primary to-ksap-secondary bg-clip-text text-transparent">
                     📚 Chuletero KSAP
                 </h1>
-                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" aria-label="Cambiar tema">
-                    <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                    <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                </button>
+                <div class="flex gap-2">
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" aria-label="Cambiar tema">
+                        <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    </button>
+                    <button id="reset-data-btn" class="p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 transition-colors" title="Restablecer datos originales" aria-label="Restablecer datos">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+                </div>
             </div>
             
             <!-- Search -->
@@ -82,26 +94,14 @@
     <!-- Filters -->
     <div class="sticky top-[105px] z-40 bg-gray-50/95 dark:bg-ksap-dark/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 py-3">
         <div class="max-w-3xl mx-auto px-4 space-y-3">
-            <!-- Active Filters Summary -->
             <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Filtros</span>
+                <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Filtros acumulativos</span>
                 <button id="clear-filters" class="text-xs text-ksap-primary font-medium hover:underline hidden">Limpiar todo</button>
             </div>
             
-            <!-- Lenguaje -->
-            <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1" id="filter-lenguaje">
-                <!-- Injected by JS -->
-            </div>
-            
-            <!-- Categoría -->
-            <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1" id="filter-categoria">
-                <!-- Injected by JS -->
-            </div>
-            
-            <!-- Tipo -->
-            <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1" id="filter-tipo">
-                <!-- Injected by JS -->
-            </div>
+            <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1" id="filter-lenguaje"></div>
+            <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1" id="filter-categoria"></div>
+            <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1" id="filter-tipo"></div>
         </div>
     </div>
 
@@ -113,22 +113,92 @@
             </h2>
         </div>
         
-        <div id="cards-container" class="space-y-4">
-            <!-- Cards injected by JS -->
-        </div>
+        <div id="cards-container" class="space-y-4"></div>
         
         <div id="empty-state" class="hidden flex-col items-center justify-center py-12 text-center">
             <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
                 <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
             <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-1">No se encontraron resultados</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Prueba a ajustar los filtros o el término de búsqueda.</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Prueba a ajustar los filtros, el término de búsqueda o añade un nuevo registro.</p>
         </div>
     </main>
 
+    <!-- Floating Action Button -->
+    <button id="fab-add" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-ksap-primary to-ksap-secondary text-white rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-50" aria-label="Añadir registro">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+    </button>
+
+    <!-- Modal -->
+    <div id="add-modal" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" id="modal-backdrop"></div>
+        <div class="absolute inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center p-4">
+            <div class="bg-white dark:bg-ksap-surface w-full max-w-lg rounded-t-2xl md:rounded-2xl shadow-2xl modal-enter max-h-[90vh] overflow-y-auto">
+                <div class="sticky top-0 bg-white dark:bg-ksap-surface border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between z-10">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Añadir Nuevo Registro</h3>
+                    <button id="modal-close" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                
+                <form id="add-form" class="p-4 space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase mb-1">Lenguaje *</label>
+                            <input type="text" name="lenguaje" required list="lenguaje-list" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ksap-primary text-sm">
+                            <datalist id="lenguaje-list"></datalist>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase mb-1">Categoría *</label>
+                            <input type="text" name="categoria" required list="categoria-list" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ksap-primary text-sm">
+                            <datalist id="categoria-list"></datalist>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase mb-1">Tipo de Elemento *</label>
+                        <input type="text" name="tipo" required list="tipo-list" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ksap-primary text-sm">
+                        <datalist id="tipo-list"></datalist>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase mb-1">Elemento *</label>
+                        <input type="text" name="elemento" required class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ksap-primary text-sm font-semibold">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase mb-1">Sintaxis / Patrón</label>
+                        <input type="text" name="sintaxis" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ksap-primary text-sm font-mono text-ksap-primary">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase mb-1">Descripción *</label>
+                        <textarea name="descripcion" required rows="2" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ksap-primary text-sm resize-none"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase mb-1">Ejemplo KSAP</label>
+                            <textarea name="ejemplo" rows="2" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ksap-primary text-sm resize-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase mb-1">Errores Comunes</label>
+                            <textarea name="errores" rows="2" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ksap-primary text-sm resize-none"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" class="w-full py-3 bg-gradient-to-r from-ksap-primary to-ksap-secondary text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all active:scale-[0.98]">
+                            Guardar Registro
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Datos del Chuletero
-        const chuleteroData = [
+        const defaultData = [
             { lenguaje: "HTML", categoria: "Estructura", tipo: "Declaración", elemento: "DOCTYPE", sintaxis: "<!DOCTYPE html>", descripcion: "Declara HTML5 moderno", ejemplo: "Primera línea de index.html", errores: "Olvidarlo activa el 'quirks mode'" },
             { lenguaje: "HTML", categoria: "Estructura", tipo: "Etiqueta", elemento: "html", sintaxis: "<html lang=\"es\">", descripcion: "Raíz del documento + idioma", ejemplo: "<html lang=\"es\"> en todas las páginas", errores: "No poner lang perjudica el SEO" },
             { lenguaje: "HTML", categoria: "Estructura", tipo: "Contenedor", elemento: "head", sintaxis: "<head>...</head>", descripcion: "Metadatos (no visibles)", ejemplo: "<head><meta charset=\"UTF-8\"></head>", errores: "Confundirlo con body" },
@@ -285,43 +355,40 @@
             { lenguaje: "Regex", categoria: "Errores", tipo: "Problema", elemento: "Regex muy compleja", sintaxis: "", descripcion: "Difícil de mantener", ejemplo: "Dividir en partes o usar validadores HTML5", errores: "No probar con casos borde" }
         ];
 
-        // Estado
-        let activeFilters = {
-            lenguaje: null,
-            categoria: null,
-            tipo: null
-        };
+        let chuleteroData = [];
+        let activeFilters = { lenguaje: null, categoria: null, tipo: null };
         let searchQuery = "";
 
-        // DOM Elements
-        const filterLenguajeEl = document.getElementById('filter-lenguaje');
-        const filterCategoriaEl = document.getElementById('filter-categoria');
-        const filterTipoEl = document.getElementById('filter-tipo');
-        const cardsContainerEl = document.getElementById('cards-container');
-        const emptyStateEl = document.getElementById('empty-state');
-        const resultCountEl = document.getElementById('result-count');
-        const clearFiltersBtn = document.getElementById('clear-filters');
-        const searchInput = document.getElementById('search-input');
-        const themeToggle = document.getElementById('theme-toggle');
-
-        // Theme Toggle
-        if (localStorage.getItem('ksap_dark_mode') === 'true') {
-            document.documentElement.classList.add('dark');
+        function loadData() {
+            const saved = localStorage.getItem('ksap_chuletero_custom');
+            const customData = saved ? JSON.parse(saved) : [];
+            chuleteroData = [...defaultData, ...customData];
         }
-        themeToggle.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-            localStorage.setItem('ksap_dark_mode', document.documentElement.classList.contains('dark'));
-        });
 
-        // Helpers
+        function saveCustomData(customItem) {
+            const saved = localStorage.getItem('ksap_chuletero_custom');
+            const customData = saved ? JSON.parse(saved) : [];
+            customData.push(customItem);
+            localStorage.setItem('ksap_chuletero_custom', JSON.stringify(customData));
+            loadData();
+        }
+
+        function resetData() {
+            if (confirm('¿Estás seguro de que quieres borrar todos los registros personalizados y volver a los datos originales?')) {
+                localStorage.removeItem('ksap_chuletero_custom');
+                loadData();
+                activeFilters = { lenguaje: null, categoria: null, tipo: null };
+                searchQuery = "";
+                document.getElementById('search-input').value = "";
+                renderFilters();
+                renderCards();
+            }
+        }
+
         function getUniqueValues(column, parentFilters) {
             let filtered = chuleteroData;
-            if (parentFilters.lenguaje) {
-                filtered = filtered.filter(d => d.lenguaje === parentFilters.lenguaje);
-            }
-            if (parentFilters.categoria) {
-                filtered = filtered.filter(d => d.categoria === parentFilters.categoria);
-            }
+            if (parentFilters.lenguaje) filtered = filtered.filter(d => d.lenguaje === parentFilters.lenguaje);
+            if (parentFilters.categoria) filtered = filtered.filter(d => d.categoria === parentFilters.categoria);
             return [...new Set(filtered.map(d => d[column]))].sort();
         }
 
@@ -333,68 +400,52 @@
             return btn;
         }
 
+        function updateDatalists() {
+            const lenguajes = [...new Set(chuleteroData.map(d => d.lenguaje))].sort();
+            const categorias = [...new Set(chuleteroData.map(d => d.categoria))].sort();
+            const tipos = [...new Set(chuleteroData.map(d => d.tipo))].sort();
+
+            document.getElementById('lenguaje-list').innerHTML = lenguajes.map(l => `<option value="${l}">`).join('');
+            document.getElementById('categoria-list').innerHTML = categorias.map(c => `<option value="${c}">`).join('');
+            document.getElementById('tipo-list').innerHTML = tipos.map(t => `<option value="${t}">`).join('');
+        }
+
         function renderFilters() {
-            // Lenguaje
             filterLenguajeEl.innerHTML = '';
             const lenguajes = getUniqueValues('lenguaje', { lenguaje: null, categoria: null });
             lenguajes.forEach(lang => {
-                filterLenguajeEl.appendChild(createChip(
-                    lang, 
-                    activeFilters.lenguaje === lang, 
-                    () => toggleFilter('lenguaje', lang)
-                ));
+                filterLenguajeEl.appendChild(createChip(lang, activeFilters.lenguaje === lang, () => toggleFilter('lenguaje', lang)));
             });
 
-            // Categoría
             filterCategoriaEl.innerHTML = '';
             if (activeFilters.lenguaje) {
                 const categorias = getUniqueValues('categoria', { lenguaje: activeFilters.lenguaje, categoria: null });
                 categorias.forEach(cat => {
-                    filterCategoriaEl.appendChild(createChip(
-                        cat, 
-                        activeFilters.categoria === cat, 
-                        () => toggleFilter('categoria', cat)
-                    ));
+                    filterCategoriaEl.appendChild(createChip(cat, activeFilters.categoria === cat, () => toggleFilter('categoria', cat)));
                 });
             }
 
-            // Tipo
             filterTipoEl.innerHTML = '';
             if (activeFilters.lenguaje && activeFilters.categoria) {
                 const tipos = getUniqueValues('tipo', { lenguaje: activeFilters.lenguaje, categoria: activeFilters.categoria });
                 tipos.forEach(tipo => {
-                    filterTipoEl.appendChild(createChip(
-                        tipo, 
-                        activeFilters.tipo === tipo, 
-                        () => toggleFilter('tipo', tipo)
-                    ));
+                    filterTipoEl.appendChild(createChip(tipo, activeFilters.tipo === tipo, () => toggleFilter('tipo', tipo)));
                 });
             }
 
-            // Clear button visibility
             const hasFilters = activeFilters.lenguaje || activeFilters.categoria || activeFilters.tipo;
             clearFiltersBtn.classList.toggle('hidden', !hasFilters);
         }
 
         function toggleFilter(level, value) {
             if (activeFilters[level] === value) {
-                // Deselect this and all downstream filters
                 activeFilters[level] = null;
-                if (level === 'lenguaje') {
-                    activeFilters.categoria = null;
-                    activeFilters.tipo = null;
-                } else if (level === 'categoria') {
-                    activeFilters.tipo = null;
-                }
+                if (level === 'lenguaje') { activeFilters.categoria = null; activeFilters.tipo = null; } 
+                else if (level === 'categoria') { activeFilters.tipo = null; }
             } else {
-                // Select this, clear downstream
                 activeFilters[level] = value;
-                if (level === 'lenguaje') {
-                    activeFilters.categoria = null;
-                    activeFilters.tipo = null;
-                } else if (level === 'categoria') {
-                    activeFilters.tipo = null;
-                }
+                if (level === 'lenguaje') { activeFilters.categoria = null; activeFilters.tipo = null; } 
+                else if (level === 'categoria') { activeFilters.tipo = null; }
             }
             renderFilters();
             renderCards();
@@ -402,21 +453,18 @@
 
         function renderCards() {
             let filtered = chuleteroData;
-
-            // Apply filters
             if (activeFilters.lenguaje) filtered = filtered.filter(d => d.lenguaje === activeFilters.lenguaje);
             if (activeFilters.categoria) filtered = filtered.filter(d => d.categoria === activeFilters.categoria);
             if (activeFilters.tipo) filtered = filtered.filter(d => d.tipo === activeFilters.tipo);
 
-            // Apply search
             if (searchQuery) {
                 const q = searchQuery.toLowerCase();
                 filtered = filtered.filter(d => 
                     d.elemento.toLowerCase().includes(q) ||
-                    d.sintaxis.toLowerCase().includes(q) ||
+                    (d.sintaxis && d.sintaxis.toLowerCase().includes(q)) ||
                     d.descripcion.toLowerCase().includes(q) ||
-                    d.ejemplo.toLowerCase().includes(q) ||
-                    d.errores.toLowerCase().includes(q)
+                    (d.ejemplo && d.ejemplo.toLowerCase().includes(q)) ||
+                    (d.errores && d.errores.toLowerCase().includes(q))
                 );
             }
 
@@ -435,7 +483,7 @@
             cardsContainerEl.innerHTML = filtered.map(item => `
                 <div class="card-hover bg-white dark:bg-ksap-surface rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700">
                     <div class="flex items-start justify-between mb-3">
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 flex-wrap">
                             <span class="px-2 py-0.5 rounded text-xs font-bold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 uppercase tracking-wide">
                                 ${item.lenguaje}
                             </span>
@@ -462,28 +510,85 @@
                     </p>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                        ${item.ejemplo ? `
                         <div class="bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800 rounded-lg p-3">
                             <div class="text-xs font-semibold text-green-700 dark:text-green-400 mb-1 uppercase tracking-wider">Ejemplo KSAP</div>
                             <div class="text-gray-700 dark:text-gray-300">${item.ejemplo}</div>
-                        </div>
+                        </div>` : '<div></div>'}
+                        ${item.errores ? `
                         <div class="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-lg p-3">
                             <div class="text-xs font-semibold text-red-700 dark:text-red-400 mb-1 uppercase tracking-wider">Errores Comunes</div>
                             <div class="text-gray-700 dark:text-gray-300">${item.errores}</div>
-                        </div>
+                        </div>` : '<div></div>'}
                     </div>
                 </div>
             `).join('');
         }
 
-        // Event Listeners
-        clearFiltersBtn.addEventListener('click', () => {
+        // Modal Logic
+        const modal = document.getElementById('add-modal');
+        const fabAdd = document.getElementById('fab-add');
+        const modalClose = document.getElementById('modal-close');
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        const addForm = document.getElementById('add-form');
+
+        function openModal() {
+            updateDatalists();
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+            addForm.reset();
+        }
+
+        fabAdd.addEventListener('click', openModal);
+        modalClose.addEventListener('click', closeModal);
+        modalBackdrop.addEventListener('click', closeModal);
+
+        addForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(addForm);
+            const newItem = {
+                lenguaje: formData.get('lenguaje').trim(),
+                categoria: formData.get('categoria').trim(),
+                tipo: formData.get('tipo').trim(),
+                elemento: formData.get('elemento').trim(),
+                sintaxis: formData.get('sintaxis').trim(),
+                descripcion: formData.get('descripcion').trim(),
+                ejemplo: formData.get('ejemplo').trim(),
+                errores: formData.get('errores').trim()
+            };
+
+            saveCustomData(newItem);
+            closeModal();
+            renderFilters();
+            renderCards();
+            
+            // Scroll to top to see new item if filters match
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Theme & Search
+        if (localStorage.getItem('ksap_dark_mode') === 'true') {
+            document.documentElement.classList.add('dark');
+        }
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('ksap_dark_mode', document.documentElement.classList.contains('dark'));
+        });
+
+        document.getElementById('reset-data-btn').addEventListener('click', resetData);
+        document.getElementById('clear-filters').addEventListener('click', () => {
             activeFilters = { lenguaje: null, categoria: null, tipo: null };
             renderFilters();
             renderCards();
         });
 
         let searchTimeout;
-        searchInput.addEventListener('input', (e) => {
+        document.getElementById('search-input').addEventListener('input', (e) => {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
                 searchQuery = e.target.value.trim();
@@ -491,7 +596,17 @@
             }, 300);
         });
 
+        // DOM Elements
+        const filterLenguajeEl = document.getElementById('filter-lenguaje');
+        const filterCategoriaEl = document.getElementById('filter-categoria');
+        const filterTipoEl = document.getElementById('filter-tipo');
+        const cardsContainerEl = document.getElementById('cards-container');
+        const emptyStateEl = document.getElementById('empty-state');
+        const resultCountEl = document.getElementById('result-count');
+        const clearFiltersBtn = document.getElementById('clear-filters');
+
         // Init
+        loadData();
         renderFilters();
         renderCards();
     </script>
